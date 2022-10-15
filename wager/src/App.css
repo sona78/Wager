@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+#main {
+  color: #fdfffc;
+  background: #198754;
+  font-family: 'Source Sans Pro', sans-serif;
+}
