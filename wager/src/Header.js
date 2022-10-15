@@ -10,7 +10,7 @@ BrowserRouter as Router,
   Redirect,
   useHistory
 } from "react-router-dom";
-import logo from './assets/default.svg';
+import logo from './assets/cover.png';
 import {HOME, DASHBOARD} from './App.js'
 const NavLink = styled(Link)`
   color: #fff;
@@ -61,7 +61,7 @@ const NavBtnLink = styled(Link)`
     render(){
         return(
             <Navbar style = {{backgroundColor: "#198754", color: "#fdfffc", boxShadow:'0vh 0.2vh'}}  expand="lg">
-              <Navbar.Brand style = {{marginLeft:'10px'}}><Image src={logo} alt="Clip! logo" height="auto" width="100rem"></Image> </Navbar.Brand>
+              <Navbar.Brand style = {{marginLeft:'10px'}}><Image src={logo} alt="Wager logo" height="auto" width="100rem"></Image> </Navbar.Brand>
               <Navbar.Toggle aria-controls="basic-navbar-nav" style = {{backgroundColor: "white"}}/>
               <Navbar.Collapse id="basic-navbar-nav" >
                 <Nav className="mr-auto" >
