@@ -334,16 +334,16 @@ class Dashboard extends React.Component {
             <ModalContent>
               <ModalHeader>Account Details</ModalHeader>
               <ModalBody>
-                <strong>Name: </strong> {this.state.user.firstName}{" "}
+                <strong>Name: </strong> Kaustubh Sonawane {this.state.user.firstName}{" "}
                 {this.state.user.lastName}
                 <br />
                 <br />
-                <strong>Email: </strong> {this.state.user.email} <br />
+                <strong>Email: </strong> kaustubh.sonawane@utexas.edu {this.state.user.email} <br />
                 <br />
-                <strong>Trust Score: </strong> {this.state.user.trustScore}{" "}
+                <strong>Trust Score: </strong> 0.85 {this.state.user.trustScore}{" "}
                 <br />
                 <br />
-                <strong>Betting Score: </strong> {this.state.user.bettingScore}{" "}
+                <strong>Betting Score: </strong> $85{this.state.user.bettingScore}{" "}
                 <br />
               </ModalBody>
 
@@ -729,13 +729,50 @@ class Dashboard extends React.Component {
                           <FormLabel>Bet Code</FormLabel>
                           <Input placeholder="Bet Code" />
                         </FormControl>
-                      </>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button variant="ghost" mr={3} onClick={this.onBetClose}>
-                        Close
-                      </Button>
-                      <Button colorScheme="blue">Wager!</Button>
+                        
+                        <FormControl isRequired>
+                                <FormLabel>Bet Option</FormLabel>
+                                <Select
+                                onChange={this.handleBetOption}
+                                placeholder="Select option"
+                                >
+                                    <option value={1}>option 1</option>
+                                    <option value={2}>option 2</option>
+                                    <option value={3}>option 3</option>
+                                </Select>
+                            </FormControl>
+
+                            <FormControl isRequired>
+                                <FormLabel>Bet Value ($)</FormLabel>
+                                <NumberInput
+                                onChange={this.handleBetValue}
+                                min={0.0}
+                                precision={2}
+                                step={0.5}
+                                >
+                                <NumberInputField />
+                                <NumberInputStepper>
+                                    <NumberIncrementStepper />
+                                    <NumberDecrementStepper />
+                                </NumberInputStepper>
+                                </NumberInput>
+                            </FormControl>
+                            </>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button
+                            variant="ghost"
+                            mr={3}
+                            onClick={this.onBetClose}
+                            >
+                            Close
+                            </Button>
+                            <Button
+                            onClick={this.handleBetting}
+                            colorScheme="blue"
+                            >
+                            Wager!
+                            </Button>
                     </ModalFooter>
                   </ModalContent>
                 </Modal>

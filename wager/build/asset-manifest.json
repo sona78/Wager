@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.58fd4519.css",
+    "main.js": "/static/js/main.4affdbc3.js",
+    "static/js/787.f5966fad.chunk.js": "/static/js/787.f5966fad.chunk.js",
+    "static/media/cover.png": "/static/media/cover.916366b466bfbccb070b.png",
+    "static/media/axios.cjs": "/static/media/axios.862815d8cfee7fa80dee.cjs",
+    "index.html": "/index.html",
+    "main.58fd4519.css.map": "/static/css/main.58fd4519.css.map",
+    "main.4affdbc3.js.map": "/static/js/main.4affdbc3.js.map",
+    "787.f5966fad.chunk.js.map": "/static/js/787.f5966fad.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.58fd4519.css",
+    "static/js/main.4affdbc3.js"
+  ]
+}
