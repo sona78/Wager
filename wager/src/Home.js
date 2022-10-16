@@ -16,7 +16,7 @@ function Home(){
             <br/>
             <Text fontSize="4xl"><strong>Let's make betting social</strong></Text>
                 <Center>
-                <a href = {DASHBOARD}><Button bgColor="#2ec4b6" marginTop="2rem">Get Started</Button></a>
+                <a href = "/Dashboard"><Button bgColor="#2ec4b6" marginTop="2rem">Get Started</Button></a>
                 </Center>
             </Box>
             </Flex>

@@ -11,7 +11,7 @@ BrowserRouter as Router,
   useHistory
 } from "react-router-dom";
 import logo from './assets/cover.png';
-import {HOME, DASHBOARD} from './App.js'
+import {HOME, DASHBOARD, LEADERBOARD} from './App.js'
 const NavLink = styled(Link)`
   color: #fff;
   display: flex;
@@ -70,6 +70,9 @@ const NavBtnLink = styled(Link)`
                   </NavLink>
                   <NavLink to={DASHBOARD} style = {{color: "white", margin: '5px'}}>
                     Dashboard
+                  </NavLink>
+                  <NavLink to={LEADERBOARD} style = {{color: "white", margin: '5px'}}>
+                    Leaderboard
                   </NavLink>
                 </Nav>
               </Navbar.Collapse>
