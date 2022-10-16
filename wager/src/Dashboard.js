@@ -35,9 +35,11 @@ class Dashboard extends React.Component{
         this.openAddModal = this.openAddModal.bind(this)
         this.openBetModal = this.openBetModal.bind(this)
         this.openJoinModal = this.openJoinModal.bind(this)
+
+        this.handleNameChange = this.handleNameChange.bind(this)
         this.handleOptionNewChange = this.handleOptionNewChange.bind(this)
         this.handleOptionEnter = this.handleOptionEnter.bind(this)
-        this.handleNameChange = this.handleNameChange.bind(this)
+        
         this.handleTimeChange = this.handleTimeChange.bind(this)
     }
     async componentDidMount(){
