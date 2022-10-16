@@ -49,8 +49,27 @@ import {
   PublicKey,
   LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
+import {
+  useWallet,
+  useConnection,
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react";
 import { Buffer } from "buffer";
 let OptionsList = [];
+
+const Processing = () => {
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction } = useWallet();
+  return (
+    <Dashboard
+      Connection={connection}
+      Key={publicKey}
+      transactionSend={sendTransaction}
+    />
+  );
+};
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -59,6 +78,7 @@ class Dashboard extends React.Component {
     connect(this.provider);
     this.network = "https://api.devnet.solana.com";
     this.connection = new Connection(this.network);
+    this.publicKey = props.Key;
     this.systemProgram = new PublicKey("11111111111111111111111111111111");
     this.rentSysvar = new PublicKey(
       "SysvarRent111111111111111111111111111111111"
@@ -77,6 +97,9 @@ class Dashboard extends React.Component {
       time: 0,
       currentBet: {},
       userBets: [],
+      joinCode: "",
+      connection: props.Connection,
+      publicKey: props.Key,
       betOption: "",
       betValue: 0,
       addIsOpen: false,
@@ -161,9 +184,10 @@ class Dashboard extends React.Component {
   handleminBetChange = (e) => {
     this.setState({ minBet: e.value });
   };
-  handlemaxBetChange = (e) => {
-    this.setState({ maxBet: e.value });
+  handlejoinCodeChange = (e) => {
+    this.setState({ joinCode: e.value });
   };
+
   handleBetSubmit = async (e) => {
     let name = this.state.name;
     let minPlayers = this.state.minPlayers;
@@ -183,32 +207,32 @@ class Dashboard extends React.Component {
       [Buffer.from(name)],
       this.programId.publicKey
     );
-    console.log(name);
+    /*     console.log(name);
     console.log(this.provider.publicKey.toBase58());
     console.log(potPDA.toBase58());
     console.log(potBump);
-    console.log(PublicKey.isOnCurve(potPDA));
+    console.log(PublicKey.isOnCurve(potPDA)); */
     //Create bet RPC Call(Send Transaction for Create Bet)
-    let instruction = new TransactionInstruction({
+    const instruction = new TransactionInstruction({
+      programId: this.programId.publicKey,
       keys: [
         {
-          pubkey: this.provider.publicKey.toString(),
-          isSigner: false,
-          isWritable: false,
+          pubkey: this.provider.publicKey,
+          isSigner: true,
+          isWritable: true,
         },
         { pubkey: potPDA, isSigner: false, isWritable: true },
         {
-          pubkey: this.systemProgram.toString(),
+          pubkey: this.systemProgram,
           isSigner: false,
           isWritable: false,
         },
         {
-          pubkey: this.rentSysvar.toString(),
+          pubkey: this.rentSysvar,
           isSigner: false,
           isWritable: false,
         },
       ],
-      programId: this.programId.publicKey.toString(),
       data: NewWagerInstruction(
         name,
         minPlayers,
@@ -226,13 +250,19 @@ class Dashboard extends React.Component {
         hours
       ),
     });
-    const transaction = new Transaction().add(instruction);
+    let transaction = new Transaction().add(instruction);
+    console.log(transaction);
     transaction.recentBlockhash = await this.connection.getLatestBlockhash();
+    console.log("blockhas retreived");
     transaction.feePayer = this.provider.publicKey;
     console.log(transaction);
-    const signature = await this.provider.signAndSendTransaction(transaction);
+    const signedTransaction = await this.provider.signTransaction(transaction);
+    const signature = await this.connection.sendRawTransaction(
+      signedTransaction.serialize()
+    );
+    /* const signature = await this.provider.signAndSendTransaction(transaction);
     console.log("success!");
-    await this.connection.getSignatureStatus(signature);
+    await this.connection.getSignatureStatus(signature); */
   };
 
   handleBetOption = (e) => {
@@ -257,7 +287,7 @@ class Dashboard extends React.Component {
     let instruction = new TransactionInstruction({
       keys: [
         {
-          pubkey: this.provider.publicKey.toString(),
+          pubkey: this.state.publicKey,
           isSigner: false,
           isWritable: false,
         },
@@ -279,10 +309,14 @@ class Dashboard extends React.Component {
     const transaction = new Transaction().add(instruction);
     transaction.recentBlockhash = await this.connection.getLatestBlockhash();
     transaction.feePayer = this.provider.publicKey;
-    console.log(transaction);
+
     const signature = await this.provider.signAndSendTransaction(transaction);
     console.log("success!");
     await this.connection.getSignatureStatus(signature);
+  };
+
+  handleJoinBet = async (id) => {
+    //use account info to join based on if bet in id is active
   };
 
   render() {
@@ -629,7 +663,10 @@ class Dashboard extends React.Component {
                       <>
                         <FormControl isRequired>
                           <FormLabel>Bet Code</FormLabel>
-                          <Input placeholder="Bet Code" />
+                          <Input
+                            placeholder="Bet Code"
+                            onChange={this.handlejoinCodeChange}
+                          />
                         </FormControl>
                       </>
                     </ModalBody>
@@ -637,7 +674,9 @@ class Dashboard extends React.Component {
                       <Button variant="ghost" mr={3} onClick={this.onBetClose}>
                         Close
                       </Button>
-                      <Button colorScheme="blue">Wager!</Button>
+                      <Button colorScheme="blue" onClick={this.handleJoinBet()}>
+                        Wager!
+                      </Button>
                     </ModalFooter>
                   </ModalContent>
                 </Modal>
@@ -664,4 +703,4 @@ class Dashboard extends React.Component {
                         ))}
                         */
 
-export default Dashboard;
+export default Processing;
