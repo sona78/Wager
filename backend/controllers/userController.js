@@ -5,9 +5,11 @@ const loginUser = async (req, res) => {
   const { firstname, lastname, email, password } = req.body;
   try {
     const user = await User.login(email, password);
-    score = user.betting_score;
-
-    res.status(200).json({ firstname, lastname, email, score });
+    betting_score = user.betting_score;
+    trust_score = user.trust_score;
+    res
+      .status(200)
+      .json({ firstname, lastname, email, betting_score, trust_score });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -17,8 +19,11 @@ const signupUser = async (req, res) => {
   const { firstname, lastname, email, password } = req.body;
   try {
     const user = await User.signup(firstname, lastname, email, password);
-    score = user.betting_score;
-    res.status(200).json({ email, score });
+    betting_score = user.betting_score;
+    trust_score = user.trust_score;
+    res
+      .status(200)
+      .json({ firstname, lastname, email, betting_score, trust_score });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
