@@ -13,9 +13,10 @@ class Leaderboard extends React.Component{
         }
     }
     async componentDidMount(){
-        let users = []
-        fetch('api/users', { method: 'GET' })
+        let users = {}
+        fetch('api/users')
         .then(function (response){
+            alert(response.json());
             users = response;
         })
         .catch(function (error) {
