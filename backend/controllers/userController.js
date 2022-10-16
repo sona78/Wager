@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const mongoose = require("mongoose");
 
 //login user
 const loginUser = async (req, res) => {
@@ -29,4 +30,10 @@ const signupUser = async (req, res) => {
   }
 };
 
-module.exports = { loginUser, signupUser };
+const getUsers = async (req, res) => {
+  const users = await User.find({}).sort({ createdAt: -1 });
+
+  res.status(200).json(users);
+};
+
+module.exports = { loginUser, signupUser, getUsers };

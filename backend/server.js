@@ -20,6 +20,15 @@ app.use((req, res, next) => {
 //routes
 app.use("/api/users", userRoutes);
 
+userRoutes.route("/").get(function (req, res) {
+  User.find(function (err, user) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(user);
+    }
+  });
+});
 //Serve frontend
 /* _dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
