@@ -26,7 +26,9 @@ class Leaderboard extends React.Component{
                 </GridItem>
                 <GridItem pl='2'colSpan={8} bg='#dfd' style = {{ textAlign: "center", minHeight: "95vh"}} area={'main'}>
                     <br/>
-                    <u><h1 style = {{ fontSize: "50px"}}> <strong>Leaderboard: </strong></h1></u>
+                    <Center bg='#525B88' h='100px' style= {{marginLeft: "10rem", marginRight: "10rem", color:"white", fontSize: "50px" }} color='white'>
+                    <u><h1 > <strong>Leaderboard: </strong></h1></u>
+                    </Center>
                     <br/>
                 {this.state.currentBoard != null &&
                 <>                

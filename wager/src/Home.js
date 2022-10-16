@@ -2,6 +2,8 @@ import React from 'react';
 import { Heading, Link, Image, Flex, Center, Box, IconButton, Text, Button, Container } from '@chakra-ui/react';
 import cover from "./assets/cover.png"
 import DASHBOARD from "./App.js"
+import Typist from "react-typist"
+
 
 function Home(){
     return (
@@ -14,7 +16,7 @@ function Home(){
             <br/>
             <br/>
             <br/>
-            <Text fontSize="4xl"><strong>Let's make betting social</strong></Text>
+            <Text fontSize="4xl"><strong>Let's make betting Social</strong></Text>
                 <Center>
                 <a href = "/Dashboard"><Button bgColor="#2ec4b6" marginTop="2rem">Get Started</Button></a>
                 </Center>
