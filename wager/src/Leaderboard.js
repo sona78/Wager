@@ -27,7 +27,6 @@ import {
   Container,
 } from "@chakra-ui/react";
 import Header from "./Header.js";
-const axios = require("axios").default;
 
 let fullUsers = [];
 
@@ -39,33 +38,14 @@ class Leaderboard extends React.Component {
     };
   }
 
-    async componentDidMount(){
-        let users = {}
-        fetch('api/users')
-        .then(function (response){
-            alert(response.json().keys());
-            users = response;
-        })
-        .catch(function (error) {
-            // handle error
-            console.log(error);
-        })
-        .finally(function() {
-            for (let i = 0; i < users.length; i ++){
+async componentDidMount(){
 
-            }
-            function compare( a, b ) {
-                if ( a.bettingScore < b.bettingScore ){
-                  return -1;
-                }
-                if ( a.bettingScore > b.bettingScore ){
-                  return 1;
-                }
-                return 0;
-              }
-        users.sort(compare);
-        fullUsers = users;
-      });
+        const response = await fetch('http://localhost:4000/api/users',{
+            method: "GET"
+        })
+        fullUsers = response
+
+        console.log(fullUsers.json)
   }
   render() {
     return (
@@ -114,13 +94,13 @@ class Leaderboard extends React.Component {
                 <Box>
                   <h1 style={{ fontSize: "25px" }}>Member:</h1>
                   {fullUsers.map((member) => (
-                    <h3>{member.name}</h3>
+                    <h3>{member.firstname}</h3>
                   ))}
                 </Box>
                 <Box>
                   <h1 style={{ fontSize: "25px" }}>Score:</h1>
                   {fullUsers.map((member) => (
-                    <h3>{member.bettingScore}</h3>
+                    <h3>{member.betting_score}</h3>
                   ))}
                 </Box>
               </SimpleGrid>
