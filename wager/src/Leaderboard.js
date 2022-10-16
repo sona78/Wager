@@ -1,6 +1,9 @@
 import React from 'react';
 import { Grid, SimpleGrid, Modal, ModalOverlay, FormControl, FormLabel, Input, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, GridItem, VStack, StackDivider, Heading, Link, Image, Flex, Center, Box, IconButton, Text, Button, Container } from '@chakra-ui/react';
 import Header from "./Header.js"
+const axios = require('axios').default;
+
+let fullUsers = []
 
 class Leaderboard extends React.Component{
     constructor(props){
@@ -10,7 +13,31 @@ class Leaderboard extends React.Component{
         }
     }
     async componentDidMount(){
-        
+        let users = []
+        axios.get('/api/users')
+        .then(function (response){
+            users = response;
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+        .finally(function() {
+            for (let i = 0; i < users.length; i ++){
+
+            }
+            function compare( a, b ) {
+                if ( a.bettingScore < b.bettingScore ){
+                  return -1;
+                }
+                if ( a.bettingScore > b.bettingScore ){
+                  return 1;
+                }
+                return 0;
+              }
+            users.sort(compare)
+            fullUsers = users;
+        })
     }
     render(){
         return(
@@ -30,7 +57,7 @@ class Leaderboard extends React.Component{
                     <u><h1 > <strong>Leaderboard: </strong></h1></u>
                     </Center>
                     <br/>
-                {this.state.currentBoard != null &&
+                {fullUsers.length != 0 &&
                 <>                
                 <SimpleGrid columns={3}>
                 <Box>
@@ -38,14 +65,14 @@ class Leaderboard extends React.Component{
                 </Box>
                 <Box>
                     <h1 style = {{fontSize: "25px"}}>Member:</h1>
-                {this.state.currentBoard.members.map((member) => (
-                    <h3>{member}</h3>
+                {fullUsers.map((member) => (
+                    <h3>{member.name}</h3>
                 ))}
                 </Box>
                 <Box>
                 <h1 style = {{fontSize: "25px"}}>Score:</h1>
-                {this.state.currentBoard.scores.map((score) => (
-                    <h3>{score}</h3>
+                {fullUsers.map((member) => (
+                    <h3>{member.bettingScore}</h3>
                 ))} 
                 </Box>
 
