@@ -121,3 +121,20 @@ export function VoteInstruction(option) {
   //console.log(data);
   return data;
 }
+
+export function QueryAccountInfo(option) {
+  const layout = BufferLayout.struct([
+    BufferLayout.u8("instruction"),
+    BufferLayout.seq(BufferLayout.u8(), 10, "option"),
+  ]);
+  const data = Buffer.alloc(layout.span);
+  layout.encode(
+    {
+      instruction: 2,
+      option: Buffer.from(option),
+    },
+    data
+  );
+  //console.log(data);
+  return data;
+}
