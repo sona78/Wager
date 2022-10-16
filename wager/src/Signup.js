@@ -57,7 +57,7 @@ const Signup = () => {
     e.preventDefault();
 
     signup(firstname, lastname, email, password);
-    success && navigate("/Dashboard");
+    navigate("/Dashboard");
   };
   return (
     <Container style={{ maxWidth: 800 }} className="mt-5">

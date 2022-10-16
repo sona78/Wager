@@ -40,8 +40,7 @@ class Leaderboard extends React.Component {
   }
   async componentDidMount() {
     let users = [];
-    axios
-      .get("http:localhost:4000/api/users")
+    fetch("api/users", { method: "GET" })
       .then(function (response) {
         users = response;
       })
