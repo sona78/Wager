@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, SimpleGrid, Modal, NumberInput,
-    NumberInputField,
+    NumberInputField, Select,
     NumberInputStepper,
     NumberIncrementStepper,
     NumberDecrementStepper, ModalOverlay, FormControl, FormLabel, Input, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, GridItem, VStack, StackDivider, Heading, Link, Image, Flex, Center, Box, IconButton, Text, Button, Container } from '@chakra-ui/react';
@@ -9,7 +9,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import {BsFillPlusCircleFill} from 'react-icons/bs'
 import {MdAccountCircle} from 'react-icons/md'
 import {RiMoneyDollarCircleFill} from 'react-icons/ri'
-import DateTimePicker from 'react-datetime-picker';
+import uniqueHash from "unique-hash"
 import Header from "./Header.js"
 
 
@@ -21,11 +21,17 @@ class Dashboard extends React.Component{
             user: {},
             bets: [],
             name: "",
+            minPlayers: 0,
+            maxPlayers: 0,
+            minBet: 0,
+            maxBet: 0,
             options: [],
             option: "",
             time: 0,
             currentBet: {},
-
+            userBets: [],
+            betOption: "",
+            betValue: 0,
             addIsOpen: false,
             accIsOpen: false,
             joinIsOpen: false,
@@ -39,7 +45,7 @@ class Dashboard extends React.Component{
         this.handleNameChange = this.handleNameChange.bind(this)
         this.handleOptionNewChange = this.handleOptionNewChange.bind(this)
         this.handleOptionEnter = this.handleOptionEnter.bind(this)
-        
+
         this.handleTimeChange = this.handleTimeChange.bind(this)
     }
     async componentDidMount(){
@@ -100,7 +106,46 @@ class Dashboard extends React.Component{
     handleTimeChange = e => {
         this.setState({time: e.target.value})
     }
-    
+    handleminPlayersChange = e => {
+        this.setState({minPlayers: e.target.value})
+    }
+    handlemaxPlayersChange = e => {
+        this.setState({maxPlayers: e.target.value})
+    }
+    handleminBetChange = e => {
+        this.setState({minBet: e.target.value})
+    }
+    handlemaxBetChange = e => {
+        this.setState({maxBet: e.target.value})
+    }
+    handleBetSubmit = e => {
+        let name = this.state.name
+        let minPlayers = this.state.minPlayers
+        let maxPlayers = this.state.maxPlayers
+        let minBet = this.state.minBet
+        let maxBet = this.state.maxBet
+        let options = this.state.options
+        let hours = this.state.time; //TIME IN HOURS
+        let index = uniqueHash(name + maxBet + options)
+
+        //ENTER DATABASE LINKUP HERE USING VARIABLES
+    }
+
+    handleBetOption = e => {
+        this.setState({betOption: e.target.value})
+    }
+
+    handleBetValue = e => {
+        this.setState({betOption: e.target.value})
+    }
+
+    handleBetting(index){
+        let option = this.state.betOption
+        let value = this.state.value
+        let bet = this.state.userBets[index] //bet object in contention
+
+        //ENTER DATABASE LINKUP HERE USING VARIABLES
+    }
 
     render(){
         return(
@@ -165,7 +210,7 @@ class Dashboard extends React.Component{
                         <Flex>
                             <FormControl isRequired>
                             <FormLabel>Minimum Players</FormLabel>
-                            <NumberInput min={2} >
+                            <NumberInput  onChange = {this.handleminPlayersChange} min={2} >
                             <NumberInputField />
                             <NumberInputStepper>
                                 <NumberIncrementStepper />
@@ -178,7 +223,7 @@ class Dashboard extends React.Component{
                             
                             <FormControl isRequired>
                             <FormLabel>Maximum Players</FormLabel>
-                            <NumberInput min={2} >
+                            <NumberInput  onChange = {this.handlemaxPlayersChange} min={2} >
                             <NumberInputField />
                             <NumberInputStepper>
                                 <NumberIncrementStepper />
@@ -192,7 +237,7 @@ class Dashboard extends React.Component{
                         <Flex>
                             <FormControl isRequired>
                             <FormLabel>Minimum Bet ($)</FormLabel>
-                            <NumberInput min= {0.00} precision={2} step={0.5}>
+                            <NumberInput  onChange = {this.handleminBetChange} min= {0.00} precision={2} step={0.5}>
                             <NumberInputField />
                             <NumberInputStepper>
                                 <NumberIncrementStepper />
@@ -203,7 +248,7 @@ class Dashboard extends React.Component{
 
                             <FormControl isRequired>
                             <FormLabel>Maximum Bet ($)</FormLabel>
-                            <NumberInput min= {0.00} precision={2} step={0.5}>
+                            <NumberInput onChange = {this.handlemaxBetChange} min= {0.00} precision={2} step={0.5}>
                             <NumberInputField />
                             <NumberInputStepper>
                                 <NumberIncrementStepper />
@@ -232,7 +277,7 @@ class Dashboard extends React.Component{
 
                         <FormControl isRequired>
                         <FormLabel>Hours to Bet</FormLabel>
-                        <NumberInput  placeholder='Enter Option'>
+                        <NumberInput value = {this.state.time} onChange = {this.handleTimeChange} placeholder='Enter Option'>
                         <NumberInputField />
                         </NumberInput>
                         </FormControl>
@@ -244,7 +289,7 @@ class Dashboard extends React.Component{
                         <Button variant='ghost' mr={3} onClick={this.onAddClose}>
                         Close
                         </Button>
-                        <Button colorScheme='blue'>Wager!</Button>
+                        <Button onClick = {this.handleBetSubmit} colorScheme='blue'>Wager!</Button>
                     </ModalFooter>
                     </ModalContent>
                 </Modal>
@@ -260,6 +305,7 @@ class Dashboard extends React.Component{
                         <FormLabel>Bet Code</FormLabel>
                         <Input placeholder='Bet Code' />
                         </FormControl>
+                        
                     </>
 
                     </ModalBody>
@@ -282,7 +328,7 @@ class Dashboard extends React.Component{
                         hasMore={false}
                         loader={<h4>Loading...</h4>}>
                     
-                    {this.state.bets.map((bet, index) => (
+                    {this.state.userBets.map((bet, index) => (
                             <Card id = {bet.id} style = {{margin:"1rem", width: "90%"}}>
                                 <Card.Header>{bet.id}</Card.Header>
                                 <Card.Body> 
@@ -291,11 +337,11 @@ class Dashboard extends React.Component{
                                     <Box>
                                     Position: {bet.position} <br/>
                                     Stake: {bet.stake} <br/>
-                                    Total Pot: {bet.totalPot}
+                                    Total Pot: {bet.total}
                                     </Box>
                                     <Box>
                                     Betting Expires: {bet.time} <br/>
-                                    Total Players: {bet.playerNumber} <br/>
+                                    Total Players: {bet.playerCount} <br/>
                                     <br/>
 
                                     </Box>
@@ -315,16 +361,33 @@ class Dashboard extends React.Component{
                                         <ModalBody>
                                         <>
                                             <FormControl isRequired>
-                                            <FormLabel></FormLabel>
-                                            <Input placeholder='Bet Code' />
+                                            <FormLabel>Bet Option</FormLabel>
+                                            <Select onChange = {this.handleBetOption} placeholder='Select option'>
+                                            {bet.options.map((option) =>(
+                                                <option value={option}>{option}</option>
+                                            ))}
+                                            </Select>
                                             </FormControl>
+
+                                            <FormControl isRequired>
+                                            <FormLabel>Bet Value ($)</FormLabel>
+                                            <NumberInput onChange = {this.handleBetValue} min= {0.00} precision={2} step={0.5}>
+                                            <NumberInputField />
+                                            <NumberInputStepper>
+                                                <NumberIncrementStepper />
+                                                <NumberDecrementStepper />
+                                            </NumberInputStepper>
+                                            </NumberInput>
+                                            </FormControl>
+
+
                                         </>
                                         </ModalBody>
                                         <ModalFooter>
                                             <Button variant='ghost' mr={3} onClick={this.onBetClose}>
                                             Close
                                             </Button>
-                                            <Button colorScheme='blue'>Wager!</Button>
+                                            <Button onClick = {this.handleBetting(index)} colorScheme='blue'>Wager!</Button>
                                         </ModalFooter>
                                         </ModalContent>
                                     </Modal>
