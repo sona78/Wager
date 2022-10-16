@@ -20,6 +20,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  betting_score: {
+    type: Number,
+    required: true,
+  },
 });
 
 // static signup method
@@ -48,6 +52,7 @@ userSchema.statics.signup = async function (
     lastname,
     email,
     password,
+    betting_score: 0,
   });
 
   return user;
