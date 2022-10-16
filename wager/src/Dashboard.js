@@ -87,6 +87,7 @@ class Dashboard extends React.Component {
     this.state = {
       user: {},
       bets: [],
+      betComplete: [],
       name: "",
       minPlayers: 0,
       maxPlayers: 0,
@@ -319,6 +320,9 @@ class Dashboard extends React.Component {
     //use account info to join based on if bet in id is active
   };
 
+  selectOption(id, option) {
+    //use bet id and option
+  }
   render() {
     return (
       <Grid
@@ -548,32 +552,35 @@ class Dashboard extends React.Component {
             hasMore={false}
             loader={<h4>Loading...</h4>}
           >
-            {this.state.userBets.map((bet, index) => (
-              <Card id={bet.id} style={{ margin: "1rem", width: "90%" }}>
-                <Card.Header>{bet.id}</Card.Header>
-                <Card.Body>
-                  <Card.Title>{bet.name}</Card.Title>
-                  <SimpleGrid columns={2} spacing={10}>
-                    <Box>
-                      Position: {bet.position} <br />
-                      Stake: {bet.stake} <br />
-                      Total Pot: {bet.total}
-                    </Box>
-                    <Box>
-                      Betting Expires: {bet.time} <br />
-                      Total Players: {bet.playerCount} <br />
-                      <br />
-                    </Box>
-                  </SimpleGrid>
-                </Card.Body>
-                <Card.Footer align="right">
-                  <Button
-                    colorScheme="green"
-                    mr={3}
-                    onClick={this.openBetModal(index)}
-                  >
-                    Make Bet
-                  </Button>
+            {this.state.userBets.map((bet, index) =>
+              this.state.betComplete[index] ? (
+                <>
+                  <Card id={bet.id} style={{ margin: "1rem", width: "90%" }}>
+                    <Card.Header>ID: {bet.id}</Card.Header>
+                    <Card.Title>{bet.name}</Card.Title>
+                    <SimpleGrid columns={2} spacing={10}>
+                      <Box>
+                        Position: {bet.currentOption} <br />
+                        Stake: {bet.stake} <br />
+                      </Box>
+                      <Box>
+                        Total Pot: {bet.total} <br />
+                        Total Players: {bet.playerCount} <br />
+                        <br />
+                      </Box>
+                    </SimpleGrid>
+                    <Card.Footer align="right">
+                      {bet.options.map((option) => (
+                        <Button
+                          colorScheme="green"
+                          mr={3}
+                          onClick={this.selectOption(bet.id, option)}
+                        >
+                          {option}
+                        </Button>
+                      ))}
+                    </Card.Footer>
+                  </Card>
 
                   <Modal
                     isOpen={this.state.betIsOpen}
@@ -630,9 +637,93 @@ class Dashboard extends React.Component {
                       </ModalFooter>
                     </ModalContent>
                   </Modal>
-                </Card.Footer>
-              </Card>
-            ))}
+                </>
+              ) : (
+                <Card id={bet.id} style={{ margin: "1rem", width: "90%" }}>
+                  <Card.Header>ID: {bet.id}</Card.Header>
+
+                  <Card.Title>{bet.name}</Card.Title>
+                  <Card.Body>
+                    <SimpleGrid columns={2} spacing={10}>
+                      <Box>
+                        Position: {bet.position} <br />
+                        Stake: {bet.stake} <br />
+                      </Box>
+                      <Box>
+                        Betting Expires: {bet.time} <br />
+                        Total Players: {bet.playerCount} <br />
+                        <br />
+                      </Box>
+                    </SimpleGrid>
+                  </Card.Body>
+                  <Card.Footer align="right">
+                    <Button
+                      colorScheme="green"
+                      mr={3}
+                      onClick={this.openBetModal(index)}
+                    >
+                      Make Bet
+                    </Button>
+
+                    <Modal
+                      isOpen={this.state.betIsOpen}
+                      onClose={this.onBetClose}
+                    >
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>Make Bet</ModalHeader>
+                        <ModalBody>
+                          <>
+                            <FormControl isRequired>
+                              <FormLabel>Bet Option</FormLabel>
+                              <Select
+                                onChange={this.handleBetOption}
+                                placeholder="Select option"
+                              >
+                                {bet.options.map((option) => (
+                                  <option value={option}>{option}</option>
+                                ))}
+                              </Select>
+                            </FormControl>
+
+                            <FormControl isRequired>
+                              <FormLabel>Bet Value ($)</FormLabel>
+                              <NumberInput
+                                onChange={this.handleBetValue}
+                                min={0.0}
+                                precision={2}
+                                step={0.5}
+                              >
+                                <NumberInputField />
+                                <NumberInputStepper>
+                                  <NumberIncrementStepper />
+                                  <NumberDecrementStepper />
+                                </NumberInputStepper>
+                              </NumberInput>
+                            </FormControl>
+                          </>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button
+                            variant="ghost"
+                            mr={3}
+                            onClick={this.onBetClose}
+                          >
+                            Close
+                          </Button>
+                          <Button
+                            onClick={this.handleBetting(index)}
+                            colorScheme="blue"
+                          >
+                            Wager!
+                          </Button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
+                  </Card.Footer>
+                </Card>
+              )
+            )}
 
             <Card id="ID" style={{ margin: "1rem", width: "90%" }}>
               <Card.Header>BET NAME</Card.Header>

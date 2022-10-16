@@ -13,10 +13,63 @@ import {
 } from "@chakra-ui/react";
 import cover from "./assets/cover.png";
 import DASHBOARD from "./App.js";
+import Particles from "react-tsparticles"
 
 function Home() {
   return (
     <div id="main">
+        <Particles
+    params={{
+	    "particles": {
+	        "number": {
+	            "value": 160,
+	            "density": {
+	                "enable": false
+	            }
+	        },
+	        "size": {
+	            "value": 3,
+	            "random": true,
+	            "anim": {
+	                "speed": 4,
+	                "size_min": 0.3
+	            }
+	        },
+	        "line_linked": {
+	            "enable": false
+	        },
+	        "move": {
+	            "random": true,
+	            "speed": 1,
+	            "direction": "top",
+	            "out_mode": "out"
+	        }
+	    },
+	    "interactivity": {
+	        "events": {
+	            "onhover": {
+	                "enable": true,
+	                "mode": "bubble"
+	            },
+	            "onclick": {
+	                "enable": true,
+	                "mode": "repulse"
+	            }
+	        },
+	        "modes": {
+	            "bubble": {
+	                "distance": 250,
+	                "duration": 2,
+	                "size": 0,
+	                "opacity": 0
+	            },
+	            "repulse": {
+	                "distance": 400,
+	                "duration": 4
+	            }
+	        }
+	    }
+	}} />
       <Flex justify="center" minHeight="100vh" alignItems="center">
         <Box>
           <Image
@@ -31,7 +84,7 @@ function Home() {
           <br />
           <br />
           <Text fontSize="4xl">
-            <strong>Let's make betting Social</strong>
+            <strong>Let's make betting Social!</strong>
           </Text>
           <Center>
             <a href="/Dashboard">
