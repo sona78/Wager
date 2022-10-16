@@ -6,11 +6,13 @@ import Home from "./Home.js";
 import Dashboard from "./Dashboard.js";
 import Login from "./Login.js";
 import Signup from "./Signup.js";
+import Leaderboard from "./Leaderboard.js";
 
 export var HOME = "/";
 export var DASHBOARD = "/Dashboard";
 export var LOGIN = "/login";
 export var SIGNUP = "/signup";
+export var LEADERBOARD = "/Leaderboard";
 
 class App extends React.Component {
   render() {
@@ -22,6 +24,7 @@ class App extends React.Component {
             <Route exact path={DASHBOARD} element={<Dashboard />} />
             <Route exact path={LOGIN} element={<Login />} />
             <Route exact path={SIGNUP} element={<Signup />} />
+            <Route exact path={LEADERBOARD} element={<Leaderboard />} />
           </Routes>
         </Router>
       </ChakraProvider>
