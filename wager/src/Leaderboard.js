@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   SimpleGrid,
@@ -28,7 +28,20 @@ import {
 } from "@chakra-ui/react";
 import Header from "./Header.js";
 
-let fullUsers = [];
+function Holder() {
+  const [result, setResult] = useState([]);
+  const api = () => {
+    fetch("http://localhost:4000/api/users", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => setResult(data.sort()));
+  };
+  useEffect(() => {
+    api();
+  }, []);
+  return <Leaderboard arr={result} />;
+}
 
 class Leaderboard extends React.Component {
   constructor(props) {
@@ -38,15 +51,6 @@ class Leaderboard extends React.Component {
     };
   }
 
-async componentDidMount(){
-
-        const response = await fetch('http://localhost:4000/api/users',{
-            method: "GET"
-        })
-        fullUsers = response
-
-        console.log(fullUsers.json)
-  }
   render() {
     return (
       <Grid
@@ -87,20 +91,32 @@ async componentDidMount(){
             </u>
           </Center>
           <br />
-          {fullUsers.length != 0 && (
+          {this.props.arr.length != 0 && (
             <>
               <SimpleGrid columns={3}>
-                <Box></Box>
-                <Box>
-                  <h1 style={{ fontSize: "25px" }}>Member:</h1>
-                  {fullUsers.map((member) => (
-                    <h3>{member.firstname}</h3>
+                <Box columns={1}>
+                  <h1 style={{ fontSize: "50px" }}>Member:</h1>
+                  <br />
+                  {this.props.arr.map((member) => (
+                    <>
+                      <h3 style={{ fontSize: "20px" }}>
+                        {member.firstname} {member.lastname}
+                      </h3>
+                      <br />
+                    </>
                   ))}
                 </Box>
-                <Box>
-                  <h1 style={{ fontSize: "25px" }}>Score:</h1>
-                  {fullUsers.map((member) => (
-                    <h3>{member.betting_score}</h3>
+                <Box columns={1}></Box>
+                <Box columns={1}>
+                  <h1 style={{ fontSize: "50px" }}>Score:</h1>
+                  <br />
+                  {this.props.arr.map((member) => (
+                    <>
+                      <h3 style={{ fontSize: "20px" }}>
+                        {member.betting_score}
+                      </h3>
+                      <br />
+                    </>
                   ))}
                 </Box>
               </SimpleGrid>
@@ -112,4 +128,4 @@ async componentDidMount(){
   }
 }
 
-export default Leaderboard;
+export default Holder;

@@ -74,16 +74,18 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     // Wallet detection
-    this.provider = getProvider(); // see "Detecting the Provider"
+    /*     this.provider = getProvider(); // see "Detecting the Provider"
     connect(this.provider);
     this.network = "https://api.devnet.solana.com";
-    this.connection = new Connection(this.network);
+    this.connection = new Connection(this.network); */
     this.publicKey = props.Key;
+    console.log(this.publicKey.toBase58());
     this.systemProgram = new PublicKey("11111111111111111111111111111111");
     this.rentSysvar = new PublicKey(
       "SysvarRent111111111111111111111111111111111"
     );
     this.programId = Keypair.generate();
+    this.transactionSend = props.transactionSend;
     this.state = {
       user: {},
       bets: [],
@@ -218,11 +220,11 @@ class Dashboard extends React.Component {
       programId: this.programId.publicKey,
       keys: [
         {
-          pubkey: this.provider.publicKey,
+          pubkey: this.publicKey,
           isSigner: true,
           isWritable: true,
         },
-        { pubkey: potPDA, isSigner: false, isWritable: true },
+        { pubkey: potPDA, isSigner: true, isWritable: true },
         {
           pubkey: this.systemProgram,
           isSigner: false,
@@ -253,14 +255,30 @@ class Dashboard extends React.Component {
     });
     let transaction = new Transaction().add(instruction);
     console.log(transaction);
-    transaction.recentBlockhash = await this.connection.getLatestBlockhash();
+    console.log(this.state.connection);
+    const {
+      context: { slot: minContextSlot },
+      value: { blockhash, lastValidBlockHeight },
+    } = await this.state.connection.getLatestBlockhashAndContext();
+    transaction.recentBlockhash = blockhash;
     console.log("blockhas retreived");
-    transaction.feePayer = this.provider.publicKey;
+    const signature = await this.transactionSend(
+      transaction,
+      this.state.connection,
+      { minContextSlot }
+    );
+    await this.state.connection.confirmTransaction({
+      blockhash,
+      lastValidBlockHeight,
+      signature,
+    });
+
+    //transaction.feePayer = this.provider.publicKey;
     console.log(transaction);
-    const signedTransaction = await this.provider.signTransaction(transaction);
+    /*   const signedTransaction = await this.provider.signTransaction(transaction);
     const signature = await this.connection.sendRawTransaction(
       signedTransaction.serialize()
-    );
+    ); */
     /* const signature = await this.provider.signAndSendTransaction(transaction);
     console.log("success!");
     await this.connection.getSignatureStatus(signature); */
@@ -367,17 +385,18 @@ class Dashboard extends React.Component {
             <ModalContent>
               <ModalHeader>Account Details</ModalHeader>
               <ModalBody>
-                <strong>Name: </strong> Kaustubh Sonawane {this.state.user.firstName}{" "}
-                {this.state.user.lastName}
+                <strong>Name: </strong> Kaustubh Sonawane{" "}
+                {this.state.user.firstName} {this.state.user.lastName}
                 <br />
                 <br />
-                <strong>Email: </strong> kaustubh.sonawane@utexas.edu {this.state.user.email} <br />
+                <strong>Email: </strong> kaustubh.sonawane@utexas.edu{" "}
+                {this.state.user.email} <br />
                 <br />
                 <strong>Trust Score: </strong> 0.85 {this.state.user.trustScore}{" "}
                 <br />
                 <br />
-                <strong>Betting Score: </strong> $85{this.state.user.bettingScore}{" "}
-                <br />
+                <strong>Betting Score: </strong> $85
+                {this.state.user.bettingScore} <br />
               </ModalBody>
 
               <ModalFooter>
@@ -668,30 +687,28 @@ class Dashboard extends React.Component {
                 </Card>
               )
             )}
-            
 
-<Card id="ID" style={{ margin: "1rem", width: "90%" }}>
-              <Card.Header>BET NAME</Card.Header>
-              <Card.Body>
-                <SimpleGrid columns={2} spacing={10}>
-                  <Box>
-                    Position: POSITION <br />
-                    Stake: STAKE <br />
-                    Total Pot: POT
-                  </Box>
-                  <Box>
-                    Betting Expires: DATE <br />
-                    Total Players: PLAYERS <br />
-                    <br />
-                  </Box>
-                </SimpleGrid>
-              </Card.Body>
+            <Card id="iid" style={{ margin: "1rem", width: "90%" }}>
+              <Card.Header>Voting</Card.Header>
+              <Card.Title>Racing</Card.Title>
+              <SimpleGrid columns={2} spacing={100}>
+                <Box>
+                  Position: Option 1 <br />
+                  Stake: $30 <br />
+                </Box>
+                <Box>
+                  Total Pot: $500 <br />
+                  Total Players: 8 <br />
+                  <br />
+                </Box>
+              </SimpleGrid>
               <Card.Footer align="right">
-                <Button colorScheme="green" mr={3} onClick={this.openBetModal}>
-                  Make Bet
+                <Button colorScheme="red" mr={3}>
+                  Ferrari
                 </Button>
-
-                
+                <Button colorScheme="red" mr={3}>
+                  Ford
+                </Button>
               </Card.Footer>
             </Card>
 
@@ -715,8 +732,6 @@ class Dashboard extends React.Component {
                 <Button colorScheme="green" mr={3} onClick={this.openBetModal}>
                   Make Bet
                 </Button>
-
-                
               </Card.Footer>
             </Card>
 
@@ -740,33 +755,6 @@ class Dashboard extends React.Component {
                 <Button colorScheme="green" mr={3} onClick={this.openBetModal}>
                   Make Bet
                 </Button>
-
-                
-              </Card.Footer>
-            </Card>
-
-<Card id="ID" style={{ margin: "1rem", width: "90%" }}>
-              <Card.Header>BET NAME</Card.Header>
-              <Card.Body>
-                <SimpleGrid columns={2} spacing={10}>
-                  <Box>
-                    Position: POSITION <br />
-                    Stake: STAKE <br />
-                    Total Pot: POT
-                  </Box>
-                  <Box>
-                    Betting Expires: DATE <br />
-                    Total Players: PLAYERS <br />
-                    <br />
-                  </Box>
-                </SimpleGrid>
-              </Card.Body>
-              <Card.Footer align="right">
-                <Button colorScheme="green" mr={3} onClick={this.openBetModal}>
-                  Make Bet
-                </Button>
-
-                
               </Card.Footer>
             </Card>
 
@@ -790,67 +778,108 @@ class Dashboard extends React.Component {
                 <Button colorScheme="green" mr={3} onClick={this.openBetModal}>
                   Make Bet
                 </Button>
-
-                
               </Card.Footer>
             </Card>
 
+            <Card id="ID" style={{ margin: "1rem", width: "90%" }}>
+              <Card.Header>BET NAME</Card.Header>
+              <Card.Body>
+                <SimpleGrid columns={2} spacing={10}>
+                  <Box>
+                    Position: POSITION <br />
+                    Stake: STAKE <br />
+                    Total Pot: POT
+                  </Box>
+                  <Box>
+                    Betting Expires: DATE <br />
+                    Total Players: PLAYERS <br />
+                    <br />
+                  </Box>
+                </SimpleGrid>
+              </Card.Body>
+              <Card.Footer align="right">
+                <Button colorScheme="green" mr={3} onClick={this.openBetModal}>
+                  Make Bet
+                </Button>
+              </Card.Footer>
+            </Card>
 
+            <Card id="ID" style={{ margin: "1rem", width: "90%" }}>
+              <Card.Header>BET NAME</Card.Header>
+              <Card.Body>
+                <SimpleGrid columns={2} spacing={10}>
+                  <Box>
+                    Position: POSITION <br />
+                    Stake: STAKE <br />
+                    Total Pot: POT
+                  </Box>
+                  <Box>
+                    Betting Expires: DATE <br />
+                    Total Players: PLAYERS <br />
+                    <br />
+                  </Box>
+                </SimpleGrid>
+              </Card.Body>
+              <Card.Footer align="right">
+                <Button colorScheme="green" mr={3} onClick={this.openBetModal}>
+                  Make Bet
+                </Button>
+              </Card.Footer>
+            </Card>
 
             <Modal isOpen={this.state.betIsOpen} onClose={this.onBetClose}>
-                  <ModalOverlay />
-                  <ModalContent>
-                    <ModalHeader>Make Bet</ModalHeader>
-                    <ModalBody>
-                      <>
-                        <FormControl isRequired>
-                          <FormLabel>Bet Code</FormLabel>
-                          <Input
-                            placeholder="Bet Code"
-                            onChange={this.handlejoinCodeChange}
-                          />
-                        </FormControl>
-       
-                        <FormControl isRequired>
-                                <FormLabel>Bet Option</FormLabel>
-                                <Select
-                                onChange={this.handleBetOption}
-                                placeholder="Select option"
-                                >
-                                    <option value={1}>option 1</option>
-                                    <option value={2}>option 2</option>
-                                    <option value={3}>option 3</option>
-                                </Select>
-                            </FormControl>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Make Bet</ModalHeader>
+                <ModalBody>
+                  <>
+                    <FormControl isRequired>
+                      <FormLabel>Bet Code</FormLabel>
+                      <Input
+                        placeholder="Bet Code"
+                        onChange={this.handlejoinCodeChange}
+                      />
+                    </FormControl>
 
-                            <FormControl isRequired>
-                                <FormLabel>Bet Value ($)</FormLabel>
-                                <NumberInput
-                                onChange={this.handleBetValue}
-                                min={0.0}
-                                precision={2}
-                                step={0.5}
-                                >
-                                <NumberInputField />
-                                <NumberInputStepper>
-                                    <NumberIncrementStepper />
-                                    <NumberDecrementStepper />
-                                </NumberInputStepper>
-                                </NumberInput>
-                            </FormControl>
-                            </>
-                        </ModalBody>
-                        <ModalFooter>
-                      <Button variant="ghost" mr={3} onClick={this.onBetClose}>
-                        Close
-                      </Button>
-                      <Button colorScheme="blue" onClick={this.handleJoinBet()}>
-                        Wager!
-                      </Button>
-                    </ModalFooter>
-                  </ModalContent>
-                </Modal>
+                    <FormControl isRequired>
+                      <FormLabel>Bet Option</FormLabel>
+                      <Select
+                        onChange={this.handleBetOption}
+                        placeholder="Select option"
+                      >
+                        <option value={1}>option 1</option>
+                        <option value={2}>option 2</option>
+                        <option value={3}>option 3</option>
+                      </Select>
+                    </FormControl>
 
+                    <FormControl isRequired>
+                      <FormLabel>Bet Value ($)</FormLabel>
+                      <NumberInput
+                        onChange={this.handleBetValue}
+                        min={0.0}
+                        precision={2}
+                        step={0.5}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    </FormControl>
+                  </>
+                </ModalBody>
+                <ModalFooter>
+                  <Button variant="ghost" mr={3} onClick={this.onBetClose}>
+                    Close
+                  </Button>
+                  <Button colorScheme="blue" onClick={this.handleJoinBet()}>
+                    Wager!
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </InfiniteScroll>
         </GridItem>
       </Grid>
