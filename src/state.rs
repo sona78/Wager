@@ -6,27 +6,18 @@ use solana_program::{
     program_pack::{Pack, Sealed},
 };
 
-#[derive(Clone, Debug, BorshSerialize, BorshDeserialize, BorshSchema, PartialEq, Default)]
-pub struct Option {
-    name : [u8;10],
+#[derive(Clone, Copy, Debug, BorshSerialize, BorshDeserialize, BorshSchema, PartialEq, Default)]
+pub struct OptionType {
+    name : [u8; 20],
     vote_count : u16,
 }
 
 #[derive(Clone, Debug, BorshSerialize, BorshDeserialize, BorshSchema, PartialEq)]
 pub struct WagerAccount {
     pub balance : u32,
-    pub option1 : Option,
-    pub option2 : Option,
-    pub option3 : Option,
-    pub option4 : Option,
-    pub option5 : Option,
-    pub option6 : Option,
-    pub option7 : Option,
-    pub option8 : Option,
-    pub min_bet : u32,
-    pub max_bet : u32,
-    pub min_players : u16,
-    pub max_players : u16,
+    pub options : [OptionType; 8],
+    //minbet maxbet minplayers maxplayers
+    pub params : (u32, u32, u16, u16),
     pub player_counter : u16,
     pub bump_seed : u8,
     pub state : WagerState,
@@ -41,7 +32,7 @@ pub enum WagerState {
 
 impl Sealed for WagerAccount {}
 impl Pack for WagerAccount {
-    const LEN: usize = 118;
+    const LEN: usize = 196;
 
     fn pack_into_slice(&self, dst: &mut [u8]) {
         let data = self.try_to_vec().unwrap();
@@ -62,14 +53,14 @@ impl Pack for WagerAccount {
 
 #[derive(Clone, Debug, BorshSerialize, BorshDeserialize, BorshSchema, PartialEq)]
 pub struct PlayerAccount {
-    pub option : [u8; 10],
+    pub option_name : [u8; 20],
     pub bet_amount : u32,
     pub voted : u8,
     pub bump_seed :u8
 }
 impl Sealed for PlayerAccount {}
 impl Pack for PlayerAccount {
-    const LEN: usize = 16;
+    const LEN: usize = 26;
 
     fn pack_into_slice(&self, dst: &mut [u8]) {
         let data = self.try_to_vec().unwrap();
@@ -87,37 +78,24 @@ impl Pack for PlayerAccount {
         })
     }
 }
-/*pub struct Contents {
-    pub(crate) seed : [u8; 5],
-    pub(crate) size : u8,
-    pub(crate) options : u8,
-}
 
-#[derive(Clone, Debug, BorshSerialize, BorshDeserialize, BorshSchema, PartialEq)]
-pub enum Wager {
-    Uninitialized,
-    Ongoing(Contents),
-    Settled(Contents),
-}
 
-impl Sealed for Wager {}
-impl Pack for Wager {
-    const LEN: usize = 8;
+#[cfg(test)]
+mod tests {
+    //use solana_program::program_pack::Pack;
 
-    fn pack_into_slice(&self, dst: &mut [u8]) {
-        let data = self.try_to_vec().unwrap();
-        dst[..data.len()].copy_from_slice(&data);
-    }
+    use crate::state::PlayerAccount;
 
-    fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
-        let mut mut_src = src;
-        Self::deserialize(&mut mut_src).map_err(|err| {
-            msg!(
-                "Error: failed to deserialize wager account: {}",
-                err
-            );
-            ProgramError::InvalidAccountData
-        })
+    use super::{WagerAccount, /*OptionType*/};
+
+    #[test]
+    fn it_works() {
+        //let option1 : OptionType = OptionType { name: vec![0,1,2,3,4], vote_count: 0};
+        //let option2 : OptionType = OptionType { name: vec![5,6,7,8,9], vote_count: 0};
+        //let test_account : WagerAccount = WagerAccount { balance: 0, options: vec![option1,option2], params: (12,123,12,20), player_counter: 5, bump_seed: 2, state: super::WagerState::Ongoing};
+        //assert_eq!(solana_program::borsh::get_packed_len::<WagerAccount>(), WagerAccount::get_packed_len());
+        print!("{}", solana_program::borsh::get_packed_len::<WagerAccount>());
+        print!("{}", solana_program::borsh::get_packed_len::<PlayerAccount>());
+
     }
 }
- */

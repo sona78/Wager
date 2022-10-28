@@ -97,7 +97,22 @@ pub fn process_instruction (
                 ],
                 &[player_signer_seeds,pot_signer_seeds]
             )?;
-            player_state.pack_into_slice(&mut player_info.data.borrow_mut())
+            invoke_signed(
+                &system_instruction::transfer(
+                funder_info.key, 
+                pot_info.key, 
+                player_state.bet_amount.into()
+            ),
+            &[
+                funder_info.clone(),
+                pot_info.clone(),
+            ], 
+            &[
+                pot_signer_seeds
+            ])?;
+            pot_account.balance += player_state.bet_amount;
+            pot_account.pack_into_slice(&mut pot_info.data.borrow_mut());
+            player_state.pack_into_slice(&mut player_info.data.borrow_mut());
         },
         WagerInstruction::VoteWinner {outcome } => {
             msg!(&outcome.to_string());
