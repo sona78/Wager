@@ -59,15 +59,14 @@ const Home = (props) => {
             w={"full"}
             h={"100vh"}
           >
-            <Stack direction={"column"} align={"center"} w={"90%"}>
+            <Stack direction={"column"} align={"center"} w={"70%"}>
               <Text fontSize="6xl" as="b" color="#195F50">
                 Wager
               </Text>
-              <Text fontSize="3xl" color="#252733">
-                Chances, Payments, and Leaderboards -- All in One Place.
+              <Text fontSize="2xl" color="#252733">
+                Chances, Payments, and Leaderboards
               </Text>
-              <Text fontSize="3xl" color="#252733"></Text>
-              <Text fontSize="3xl" color="#252733">
+              <Text fontSize="2xl" color="#252733">
                 Let's Make Betting Social.
               </Text>
               <FormControl>
@@ -91,7 +90,7 @@ const Home = (props) => {
                 <FormErrorMessage>Invalid Email</FormErrorMessage>
               </FormControl>
             </Stack>
-            <Box>
+            <Box w={"60%"}>
               <Image src={dash}></Image>
             </Box>
           </Stack>
