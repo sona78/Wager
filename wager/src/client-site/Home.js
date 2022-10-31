@@ -6,6 +6,7 @@ import {
   InputGroup,
   InputRightElement,
   Input,
+  Icon,
   useToast,
   Button,
   Image,
@@ -14,6 +15,7 @@ import {
   FormControl,
   FormErrorMessage,
 } from "@chakra-ui/react";
+import { FaDice } from "react-icons/fa";
 import dash from "./images/Dashboard.PNG";
 
 const Home = (props) => {
@@ -60,6 +62,7 @@ const Home = (props) => {
             h={"100vh"}
           >
             <Stack direction={"column"} align={"center"} w={"70%"}>
+              <Icon h={"10%"} w={"10%"} as={FaDice} color="#195F50" />
               <Text fontSize="6xl" as="b" color="#195F50">
                 Wager
               </Text>
