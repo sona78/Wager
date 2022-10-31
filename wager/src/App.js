@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
-import Home from "./Home.js";
+import Home from "./client-site/Home.js";
 import Dashboard from "./Dashboard.js";
 import Login from "./Login.js";
 import Signup from "./Signup.js";

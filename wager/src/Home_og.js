@@ -14,10 +14,9 @@ import {
 import cover from "./assets/cover.png";
 import DASHBOARD from "./App.js";
 
-function Home() {
+function Home_og() {
   return (
     <div id="main">
-        
       <Flex justify="center" minHeight="100vh" alignItems="center">
         <Box>
           <Image
